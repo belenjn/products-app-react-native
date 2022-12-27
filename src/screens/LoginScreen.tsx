@@ -1,6 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/self-closing-comp */
 import React from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -11,8 +14,21 @@ import {Background} from '../components/Background';
 import {WhiteLogo} from '../components/WhiteLogo';
 import {loginStyles} from '../theme/loginTheme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useForm} from '../hooks/useForm';
+import {StackScreenProps} from '@react-navigation/stack';
 
-export const LoginScreen = () => {
+interface Props extends StackScreenProps<any, any> {}
+
+export const LoginScreen = ({navigation}: Props) => {
+  const {email, password, form, onChange} = useForm({
+    email: '',
+    password: '',
+  });
+
+  const onLogin = () => {
+    console.log({email, password});
+    Keyboard.dismiss();
+  };
   return (
     <>
       <Background />
@@ -33,6 +49,9 @@ export const LoginScreen = () => {
               Platform.OS === 'ios' && loginStyles.inputFieldIOS,
             ]}
             selectionColor="grey"
+            onChangeText={value => onChange(value, 'email')}
+            value={email}
+            onSubmitEditing={onLogin}
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -41,19 +60,29 @@ export const LoginScreen = () => {
             placeholder="*****"
             placeholderTextColor="rgba(255,255,255,0.4)"
             underlineColorAndroid="white"
+            secureTextEntry
             style={[
               loginStyles.inputFiled,
               Platform.OS === 'ios' && loginStyles.inputFieldIOS,
             ]}
             selectionColor="grey"
+            onChangeText={value => onChange(value, 'password')}
+            value={password}
+            onSubmitEditing={onLogin}
           />
           <View style={loginStyles.buttonContainer}>
-            <TouchableOpacity activeOpacity={0.9} style={loginStyles.button}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={loginStyles.button}
+              onPress={onLogin}>
               <Text style={loginStyles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
           <View style={loginStyles.newUserContainer}>
-            <TouchableOpacity activeOpacity={0.9} onPress={() => {}}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              // con el replace no va a regresar al login
+              onPress={() => navigation.replace('RegisterScreen')}>
               <Text style={loginStyles.buttonText}>Crear cuenta</Text>
             </TouchableOpacity>
           </View>
