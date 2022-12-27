@@ -1,10 +1,11 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {} from 'react-native';
+import {Background} from '../components/Background';
 
 export const LoginScreen = () => {
   return (
-    <View>
-      <Text>LoginScreen</Text>
-    </View>
+    <>
+      <Background />
+    </>
   );
 };
