@@ -1,7 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable curly */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -14,18 +17,33 @@ import {WhiteLogo} from '../components/WhiteLogo';
 import {loginStyles} from '../theme/loginTheme';
 import {useForm} from '../hooks/useForm';
 import {StackScreenProps} from '@react-navigation/stack';
+import {AuthContext} from '../context/AuthContext';
 interface Props extends StackScreenProps<any, any> {}
 
 export const RegisterScreen = ({navigation}: Props) => {
+  const {signUp, errorMessage, removeError} = useContext(AuthContext);
+
   const {email, password, name, onChange} = useForm({
     name: '',
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+
+    Alert.alert('Registro incorrecto', errorMessage, [
+      {
+        text: 'Ok',
+        onPress: removeError,
+      },
+    ]);
+  }, [errorMessage]);
+
   const onRegister = () => {
     console.log({email, password, name});
     Keyboard.dismiss();
+    signUp({nombre: name, correo: email, password});
   };
   return (
     <>
