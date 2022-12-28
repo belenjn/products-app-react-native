@@ -43,11 +43,14 @@ export const AuthProvider = ({children}: any) => {
           user: resp.data.usuario,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      dispatch({type: 'addError', payload: 'Información incorrecta'});
     }
   };
-  const removeError = () => {};
+  const removeError = () => {
+    dispatch({type: 'removeError'});
+  };
   const logOut = () => {};
 
   return (
