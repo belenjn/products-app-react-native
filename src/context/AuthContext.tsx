@@ -1,7 +1,9 @@
+/* eslint-disable curly */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {createContext, useReducer} from 'react';
+import React, {createContext, useReducer, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Usuario, LoginResponse, LoginData} from '../interface/appInterfaces';
 import {authReducer, AuthState} from './authReducer';
 import cafeApi from '../api/cafeApi';
@@ -29,6 +31,26 @@ export const AuthContext = createContext({} as AuthContextProps);
 export const AuthProvider = ({children}: any) => {
   const [state, dispatch] = useReducer(authReducer, authInitialState);
 
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) return dispatch({type: 'notAuthenticated'});
+    const {data, status} = await cafeApi.get<LoginResponse>('/auth');
+    if (status !== 200) {
+      return dispatch({type: 'notAuthenticated'});
+    }
+    dispatch({
+      type: 'signUp',
+      payload: {
+        token: data.token,
+        user: data.usuario,
+      },
+    });
+  };
+
   const signUp = () => {};
   const signIn = async ({correo, password}: LoginData) => {
     try {
@@ -43,6 +65,7 @@ export const AuthProvider = ({children}: any) => {
           user: resp.data.usuario,
         },
       });
+      await AsyncStorage.setItem('token', resp.data.token);
     } catch (error: any) {
       console.log(error);
       dispatch({type: 'addError', payload: 'Información incorrecta'});
