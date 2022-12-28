@@ -15,7 +15,6 @@
 # Built with
 
 
-<li>React</li>
-<li>React Router</li>
-<li>Redux</li>
-<li>Style Components</li>
+- React Native
+- Typescript
+
