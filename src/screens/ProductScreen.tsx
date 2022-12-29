@@ -14,14 +14,21 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {Picker} from '@react-native-picker/picker';
 import {useCategories} from '../hooks/useCategories';
+import {useForm} from '../hooks/useForm';
 
 interface Props
   extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
 export const ProductScreen = ({navigation, route}: Props) => {
-  const {id, name = ''} = route.params;
+  const {id = '', name = ''} = route.params;
   const [selectedLanguage, setSelectedLanguage] = useState();
   const {categories} = useCategories();
+  const {_id, categoriaId, nombre, img, form, onChange} = useForm({
+    _id: id,
+    categoriaId: '',
+    nombre: name,
+    img: '',
+  });
 
   useEffect(() => {
     navigation.setOptions({
@@ -33,7 +40,12 @@ export const ProductScreen = ({navigation, route}: Props) => {
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.label}>Nombre del producto: </Text>
-        <TextInput placeholder="Producto" style={styles.textInput} />
+        <TextInput
+          placeholder="Producto"
+          style={styles.textInput}
+          value={nombre}
+          onChangeText={value => onChange(value, 'nombre')}
+        />
         <Text style={styles.label}>Categoría: </Text>
         <Picker
           selectedValue={selectedLanguage}
@@ -55,6 +67,7 @@ export const ProductScreen = ({navigation, route}: Props) => {
           <View style={{width: 10}} />
           <Button title="Galería" onPress={() => {}} color="#5856d6" />
         </View>
+        <Text>{JSON.stringify(form, null, 5)}</Text>
       </ScrollView>
     </View>
   );
