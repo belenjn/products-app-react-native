@@ -42,8 +42,9 @@ export const ProductsProvider = ({children}: any) => {
 
   const deleteProduct = async (id: string) => {};
 
-  const loadProductById = async (id: string) => {
-    throw new Error('Not implemented');
+  const loadProductById = async (id: string): Promise<Product> => {
+    const resp = await cafeApi.get<Product>(`/productos/${id}`);
+    return resp.data;
   };
 
   // TODO: cambiar ANY
