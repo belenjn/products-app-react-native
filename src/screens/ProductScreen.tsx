@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -11,12 +12,16 @@ import {
 } from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
+import {Picker} from '@react-native-picker/picker';
+import {useCategories} from '../hooks/useCategories';
 
 interface Props
   extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 
 export const ProductScreen = ({navigation, route}: Props) => {
   const {id, name = ''} = route.params;
+  const [selectedLanguage, setSelectedLanguage] = useState();
+  const {categories} = useCategories();
 
   useEffect(() => {
     navigation.setOptions({
@@ -30,6 +35,15 @@ export const ProductScreen = ({navigation, route}: Props) => {
         <Text style={styles.label}>Nombre del producto: </Text>
         <TextInput placeholder="Producto" style={styles.textInput} />
         <Text style={styles.label}>Categoría: </Text>
+        <Picker
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }>
+          {categories.map(cat => (
+            <Picker.Item label={cat.nombre} value={cat._id} key={cat._id} />
+          ))}
+        </Picker>
         <Button title="Guardar" onPress={() => {}} color="#5856d6" />
         <View
           style={{

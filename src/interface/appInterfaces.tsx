@@ -42,9 +42,20 @@ export interface Product {
   img?: string;
 }
 
+export interface CategoriesResponse {
+  total: number;
+  categorias: Categoria[];
+}
+
 export interface Categoria {
-  _id: ID;
-  nombre: Nombre;
+  _id: string;
+  nombre: string;
+  usuario?: CreatedBy;
+}
+
+export interface CreatedBy {
+  _id: string;
+  nombre: string;
 }
 
 export enum ID {
