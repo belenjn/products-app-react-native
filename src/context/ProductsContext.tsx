@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {createContext, useState} from 'react';
-import {Product} from '../interface/appInterfaces';
+import React, {createContext, useState, useEffect} from 'react';
+import {Product, ProductsResponse} from '../interface/appInterfaces';
+import cafeApi from '../api/cafeApi';
 
 type ProductsContextProps = {
   products: Product[];
@@ -21,7 +23,14 @@ export const ProductsContext = createContext({} as ProductsContextProps);
 export const ProductsProvider = ({children}: any) => {
   const [products, setProducts] = useState<Product[]>([]);
 
-  const loadProducts = async () => {};
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    const resp = await cafeApi.get<ProductsResponse>('/productos?limite=50');
+    setProducts([...resp.data.productos]);
+  };
 
   const addProduct = async (categoryId: string, productName: string) => {};
 
