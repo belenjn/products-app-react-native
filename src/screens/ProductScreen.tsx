@@ -35,13 +35,14 @@ export const ProductScreen = ({navigation, route}: Props) => {
     },
   );
 
-  const {loadProductById} = useContext(ProductsContext);
+  const {loadProductById, updateProduct, addProduct} =
+    useContext(ProductsContext);
 
   useEffect(() => {
     navigation.setOptions({
-      title: name ? name : 'Nuevo producto',
+      title: nombre ? nombre : 'Sin nombre de producto',
     });
-  }, []);
+  }, [nombre]);
 
   useEffect(() => {
     loadProduct();
@@ -56,6 +57,16 @@ export const ProductScreen = ({navigation, route}: Props) => {
       img: product.img || '',
       nombre,
     });
+  };
+
+  const saveOrUpdate = async () => {
+    if (id.length > 0) {
+      updateProduct(categoriaId, nombre, id);
+    } else {
+      const tempCategoryId = categoriaId || categories[0]._id;
+      const newProduct = await addProduct(tempCategoryId, nombre);
+      onChange(newProduct._id, '_id');
+    }
   };
 
   return (
@@ -76,17 +87,20 @@ export const ProductScreen = ({navigation, route}: Props) => {
             <Picker.Item label={cat.nombre} value={cat._id} key={cat._id} />
           ))}
         </Picker>
-        <Button title="Guardar" onPress={() => {}} color="#5856d6" />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 10,
-          }}>
-          <Button title="Cámara" onPress={() => {}} color="#5856d6" />
-          <View style={{width: 10}} />
-          <Button title="Galería" onPress={() => {}} color="#5856d6" />
-        </View>
+        <Button title="Guardar" onPress={saveOrUpdate} color="#5856d6" />
+        {_id.length > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: 10,
+            }}>
+            <Button title="Cámara" onPress={() => {}} color="#5856d6" />
+            <View style={{width: 10}} />
+            <Button title="Galería" onPress={() => {}} color="#5856d6" />
+          </View>
+        )}
+
         {img.length > 0 ? (
           <Image
             source={{uri: img}}
